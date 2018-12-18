@@ -56,18 +56,23 @@ class OHMSExport_ExportController extends Omeka_Controller_AbstractActionControl
             $restricted = metadata($item, array("Dublin Core", "Rights"));
       
             // get suppression field 
-            $suppressed = metadata($item, array("Rights", "Suppressed -Suppress description"));
-      
-            // add in check for suppressed or restricted records
-      
-      
+            $suppressed = metadata($item, array("Suppression", "Suppressed -Suppress description"));
+            $suppressed = strip_formatting($suppressed);
+            $supsubstr = preg_replace('/\s+/', '', $suppressed);
+            $chksupsubstr = "Description suppressed: Yes";
+            $chksupsubstr = preg_replace('/\s+/', '', $chksupsubstr);
+            
+            // get collection 
+            $collection = get_collection_for_item();
+            //$collectionId = metadata($collection, 'id');
+            $projectid = metadata($collection, array('Project', 'Project Code'));
 
-            $result[$id]['ohms'] = $tag00 . metadata($item, array("General", "Interview Accession")) . $tag01 . metadata($item, array("General", "Interview Date")) . $tag02 . metadata($item, array("General", "Interview Accession")) . $tag03 . metadata($item, array("Dublin Core", "Title")) . $tag04 . metadata($item, array("General", "Interview Accession")) . $tag05 . metadata($item, array("General", "Interview Series Identifier")) . $tag06 . metadata($item, "collection name") . $tag07 . metadata($item, array("General", "Interviewee Name")) . $tag08 . metadata($item, array("General", "Interviewer Name")) . $tag09 . metadata($item, array("General", "Interview Summary")) . $tag10 . metadata($item, array("Rights", "Interview Rights")) . $tag11 . metadata($item, array("Rights", "Interview Usage")) . $restricted . $suppressed . $tag12;
+            $result[$id]['ohms'] = $tag00 . metadata($item, array("General", "Interview Accession")) . $tag01 . metadata($item, array("General", "Interview Date")) . $tag02 . metadata($item, array("General", "Interview Accession")) . $tag03 . metadata($item, array("Dublin Core", "Title")) . $tag04 . metadata($item, array("General", "Interview Accession")) . $tag05 . $projectid . $tag06 . metadata($item, "collection name") . $tag07 . metadata($item, array("General", "Interviewee Name")) . $tag08 . metadata($item, array("General", "Interviewer Name")) . $tag09 . metadata($item, array("Description", "Interview Summary")) . $tag10 . metadata($item, array("Rights", "Interview Rights")) . $tag11 . metadata($item, array("Rights", "Interview Usage")) . $tag12;
 
                 $result[$id]['ohms'] = preg_replace("/[\n\r]/","",$result[$id]['ohms']);
                 $result[$id]['ohms'] = str_replace("  "," ",$result[$id]['ohms']);
 
-                }
+                }                   
     
           $this->view->assign('result', $result);
         }
@@ -91,9 +96,14 @@ class OHMSExport_ExportController extends Omeka_Controller_AbstractActionControl
             $restricted = metadata($item, array("Dublin Core", "Rights"));
       
             // get suppression field 
-            $suppressed = metadata($item, array("Rights", "Suppressed -Suppress description"));
-        
-            $result[$id]['ohms'] = $tag00 . metadata($item, array("General", "Interview Accession")) . $tag01 . metadata($item, array("General", "Interview Date")) . $tag02 . metadata($item, array("General", "Interview Accession")) . $tag03 . metadata($item, array("Dublin Core", "Title")) . $tag04 . metadata($item, array("General", "Interview Accession")) . $tag05 . metadata($item, array("General", "Interview Series Identifier")) . $tag06 . metadata($item, "collection name") . $tag07 . metadata($item, array("General", "Interviewee Name")) . $tag08 . metadata($item, array("General", "Interviewer Name")) . $tag09 . metadata($item, array("General", "Interview Summary")) . $tag10 . metadata($item, array("Rights", "Interview Rights")) . $tag11 . metadata($item, array("Rights", "Interview Usage")) . $restricted . $suppressed . $tag12;
+            $suppressed = metadata($item, array("Suppression", "Suppressed -Suppress description"));
+            
+            // get collection 
+            $collection = get_collection_for_item();
+            //$collectionId = metadata($collection, 'id');
+            $projectid = metadata($collection, array('Project', 'Project Code'));
+            
+            $result[$id]['ohms'] = $tag00 . metadata($item, array("General", "Interview Accession")) . $tag01 . metadata($item, array("General", "Interview Date")) . $tag02 . metadata($item, array("General", "Interview Accession")) . $tag03 . metadata($item, array("Dublin Core", "Title")) . $tag04 . metadata($item, array("General", "Interview Accession")) . $tag05 . $projectid . $tag06 . metadata($item, "collection name") . $tag07 . metadata($item, array("General", "Interviewee Name")) . $tag08 . metadata($item, array("General", "Interviewer Name")) . $tag09 . metadata($item, array("Description", "Interview Summary")) . $tag10 . metadata($item, array("Rights", "Interview Rights")) . $tag11 . metadata($item, array("Rights", "Interview Usage")) . $tag12;
 
             $result[$id]['ohms'] = preg_replace("/[\n\r]/","",$result[$id]['ohms']);
             $result[$id]['ohms'] = str_replace("</ROOT>","</ROOT>\n",$result[$id]['ohms']);
